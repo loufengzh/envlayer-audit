@@ -1,0 +1,5 @@
+{
+  "required": ["SERVICE_NAME", "REGION"],
+  "allowed": ["SERVICE_NAME", "REGION", "LOG_LEVEL"],
+  "protected": ["REGION"]
+}

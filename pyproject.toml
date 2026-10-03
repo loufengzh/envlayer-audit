@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "envlayer-audit"
+version = "0.1.0"
+description = "Value-blind ordered environment-layer provenance and policy audit"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+readme = "README.md"
+dependencies = []
+
+[project.scripts]
+envlayer-audit = "envlayer_audit.__main__:main"
+
+[tool.setuptools]
+packages = ["envlayer_audit"]
