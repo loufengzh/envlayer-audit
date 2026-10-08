@@ -67,6 +67,8 @@ The partial provenance is for diagnosis, not a validated effective configuration
 Exit codes: `0` complete and policy-compliant; `1` syntax or policy violations;
 `2` unreadable files, invalid UTF-8, invalid policy or command arguments. I/O and
 policy-load failures use a generic stderr message, even with `--format json`.
+Policies exceeding the JSON parser's nesting limit also exit `2` with this generic
+message, without a traceback or paths.
 
 ## Deliberately small syntax
 

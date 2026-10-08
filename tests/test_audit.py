@@ -117,6 +117,29 @@ class CLITests(unittest.TestCase):
                 self.assertEqual(code, 2)
                 self.assertNotIn('PRIVATE_VALUE', out + err)
 
+    def test_deeply_nested_policy_error_redacted(self):
+        sentinel = 'PRIVATE_NESTED_POLICY_987'
+        with tempfile.TemporaryDirectory(prefix=sentinel) as directory:
+            layer = Path(directory) / 'layer.env'
+            policy = Path(directory) / 'policy.json'
+            layer.write_text('A=' + sentinel, encoding='utf-8')
+            policy.write_text('{"required":' + '[' * 10000 +
+                              json.dumps(sentinel) + ']' * 10000 + '}',
+                              encoding='utf-8')
+            for output_format in ('text', 'json'):
+                with self.subTest(output_format=output_format):
+                    proc = subprocess.run(
+                        [sys.executable, '-m', 'envlayer_audit', str(layer),
+                         '--policy', str(policy), '--format', output_format],
+                        capture_output=True, text=True)
+                    self.assertEqual(proc.returncode, 2, proc.stderr)
+                    self.assertEqual(proc.stdout, '')
+                    self.assertEqual(
+                        proc.stderr,
+                        'envlayer-audit: input or policy could not be read or validated\n')
+                    self.assertNotIn(sentinel, proc.stdout + proc.stderr)
+                    self.assertNotIn('Traceback', proc.stderr)
+
     def test_bare_cr_rejected_without_newline_normalization(self):
         with tempfile.TemporaryDirectory() as directory:
             layer = Path(directory) / 'a.env'

@@ -41,7 +41,7 @@ def main(argv=None):
         policy = json.loads(read_text(args.policy), object_pairs_hook=_unique_object) if args.policy else {}
         validate_policy(policy)
         report = audit((read_text(path) for path in args.layers), policy)
-    except (OSError, UnicodeError, ValueError):
+    except (OSError, UnicodeError, ValueError, RecursionError):
         # Never interpolate exception text: it can contain paths or file contents.
         print("envlayer-audit: input or policy could not be read or validated", file=sys.stderr)
         return 2

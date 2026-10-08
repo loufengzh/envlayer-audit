@@ -67,6 +67,8 @@ Die vollständige Spezifikation und die Bibliotheks-API stehen im englischen REA
 Exitcodes: `0` erfolgreich; `1` Syntax- oder Richtlinienverstoß;
 `2` Datei-, UTF-8-, Richtlinien- oder Argumentfehler. Lese- und Richtlinienladefehler
 erscheinen auch im JSON-Modus als allgemeine stderr-Meldung.
+Richtlinien, die die Verschachtelungsgrenze des JSON-Parsers überschreiten, führen
+ebenfalls zu Exitcode `2` und dieser allgemeinen Meldung, ohne Stacktrace oder Pfade.
 
 Berichte enthalten gültige Schlüsselnamen und Zeilennummern, jedoch keine Pfade,
 Werte oder Hashes der Werte. Keine Geheimnisse in Schlüsselnamen verwenden.
