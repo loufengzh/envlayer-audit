@@ -49,6 +49,8 @@ Bei einem Syntaxfehler ist `complete` gleich `false`; alle Richtlinienprüfungen
 werden übersprungen und der Aufruf schlägt fehl. Ein Teilbericht ist keine
 validierte endgültige Konfiguration.
 
+Ohne `--policy` werden keine Richtlinienregeln angewendet. Ein ausdrücklich leerer Pfad (`--policy ""` oder `--policy=`), auch durch eine leere Shell-Variable in Anführungszeichen, ist ein Eingabefehler: Exitcode `2`, kein Bericht auf stdout und dieselbe allgemeine Fehlermeldung auf stderr. Die angeforderte Richtlinie wird nicht stillschweigend deaktiviert.
+
 ## Syntax und Grenzen
 
 UTF-8 ohne BOM, LF/CRLF, Leerzeilen, `#`-Kommentare, optionales `export` und

@@ -43,6 +43,8 @@ python -m unittest discover -s tests -v
 解析任意赋值失败时，报告 `complete: false`，跳过全部策略检查并失败。
 此时的键来源只是部分结果，不能视为有效的最终配置。
 
+省略 `--policy` 时不启用策略规则。显式传入空路径（`--policy ""` 或 `--policy=`），包括带引号的空 shell 变量，会作为输入错误以 `2` 退出：stdout 不输出报告，stderr 输出同样的通用错误，不会静默禁用所请求的策略。
+
 ## 语法与边界
 
 支持无 BOM 的 UTF-8、LF/CRLF、空行、`#` 注释、可选 `export`、

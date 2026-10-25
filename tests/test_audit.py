@@ -99,6 +99,23 @@ class CLITests(unittest.TestCase):
             self.assertNotIn('PRIVATE_VALUE', out + err)
             self.assertEqual(self.invoke([str(layer), '--policy', str(policy)])[0], 1)
 
+    def test_explicit_empty_policy_path_fails_closed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            layer = Path(directory) / 'layer.env'
+            layer.write_text('A=PRIVATE_VALUE_987', encoding='utf-8')
+            for output_format in ('text', 'json'):
+                for option in (['--policy', ''], ['--policy=']):
+                    with self.subTest(output_format=output_format, option=option):
+                        args = [str(layer), *option, '--format', output_format]
+                        code, out, err = self.invoke(args)
+                        self.assertEqual(code, 2)
+                        self.assertEqual(out, '')
+                        self.assertEqual(err, 'envlayer-audit: input or policy could not be read or validated\n')
+                        proc = subprocess.run(
+                            [sys.executable, '-m', 'envlayer_audit', *args],
+                            capture_output=True, text=True)
+                        self.assertEqual((proc.returncode, proc.stdout, proc.stderr), (code, out, err))
+
     def test_io_error_path_redacted(self):
         code, out, err = self.invoke(['/missing/PRIVATE_PATH_987.env'])
         self.assertEqual(code, 2)

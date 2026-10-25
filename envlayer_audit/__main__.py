@@ -38,7 +38,7 @@ def main(argv=None):
     parser.add_argument("--format", choices=("text", "json"), default="text")
     args = parser.parse_args(argv)
     try:
-        policy = json.loads(read_text(args.policy), object_pairs_hook=_unique_object) if args.policy else {}
+        policy = json.loads(read_text(args.policy), object_pairs_hook=_unique_object) if args.policy is not None else {}
         validate_policy(policy)
         report = audit((read_text(path) for path in args.layers), policy)
     except (OSError, UnicodeError, ValueError, RecursionError):

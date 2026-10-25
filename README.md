@@ -95,6 +95,8 @@ not its runtime configuration. Repeated file arguments are repeated layers. Miss
 files are errors, never silently skipped. The library accepts zero layers; the CLI
 requires at least one. Large files are read into memory; there is no streaming mode.
 
+An omitted `--policy` disables policy rules. An explicitly empty path (`--policy ""` or `--policy=`), including an empty quoted shell variable, is an input error: exit `2`, no report on stdout, and the same redacted error on stderr. It never silently disables the requested policy.
+
 ## JSON and library
 
 `--format json` emits deterministic key-sorted JSON with `schema_version: 1`,
