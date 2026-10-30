@@ -33,6 +33,11 @@ def render(report):
 
 
 def main(argv=None):
+    # Python 3.14 argparse inspects stdout while constructing its formatter.
+    # Reject absent/closed streams before that inspection can raise or hide output.
+    if sys.stdout is None or getattr(sys.stdout, "closed", False):
+        print("envlayer-audit: output could not be written", file=sys.stderr)
+        return 2
     parser = SafeParser(description="Audit explicit .env layers in low-to-high precedence, without printing values.")
     parser.add_argument("layers", nargs="+", help="input files; last assignment wins")
     parser.add_argument("--policy", help="JSON required/allowed/protected key lists")

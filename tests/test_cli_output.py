@@ -1,4 +1,5 @@
 """Real subprocess coverage for output failures, including buffered writes."""
+import io
 import json
 import os
 from pathlib import Path
@@ -6,6 +7,9 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
+
+from envlayer_audit import __main__ as cli
 
 
 class OutputErrors(unittest.TestCase):
@@ -26,6 +30,17 @@ class OutputErrors(unittest.TestCase):
     def assert_failure(self, result):
         self.assertEqual(result.returncode, 2, result.stderr)
         self.assertEqual(result.stderr, b'envlayer-audit: output could not be written\n')
+
+    def test_unavailable_stdout_is_rejected_before_parser_construction(self):
+        closed = io.StringIO()
+        closed.close()
+        for output in (None, closed):
+            with self.subTest(output=output), patch.object(sys, 'stdout', output), \
+                    patch.object(sys, 'stderr', io.StringIO()) as errors, \
+                    patch.object(cli, 'SafeParser') as parser:
+                self.assertEqual(cli.main([str(self.layer)]), 2)
+                parser.assert_not_called()
+                self.assertEqual(errors.getvalue(), 'envlayer-audit: output could not be written\n')
 
     @unittest.skipUnless(Path('/dev/full').exists(), 'requires /dev/full')
     def test_full_device_small_and_large(self):
