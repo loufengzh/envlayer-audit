@@ -78,3 +78,5 @@ Eingaben bleiben im Prozessspeicher; Dateien werden vollständig eingelesen.
 Der Bericht ersetzt keine Tests des tatsächlichen Konfigurationsladers.
 Alle Beispiele verwenden erfundene Werte. Siehe [Beitragen](../CONTRIBUTING.md),
 [Sicherheit](../SECURITY.md) und [MIT-Lizenz](../LICENSE).
+
+Fehler beim Schreiben oder Leeren des Berichtspuffers, einschließlich nicht verfügbarem stdout, führen ebenfalls zu Exitcode `2` und einer allgemeinen Meldung auf stderr, unabhängig vom Auditergebnis. Am Ziel kann ein Teilbericht verbleiben; nach einem Ausgabefehler muss er verworfen werden. Dauerhafte Speicherung oder nachgelagerte Verarbeitung werden nicht garantiert.

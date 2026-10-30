@@ -1,6 +1,7 @@
 """CLI: paths are deliberately not included in reports or errors."""
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 from .core import audit, validate_policy
@@ -45,7 +46,27 @@ def main(argv=None):
         # Never interpolate exception text: it can contain paths or file contents.
         print("envlayer-audit: input or policy could not be read or validated", file=sys.stderr)
         return 2
-    print(json.dumps(report, indent=2, ensure_ascii=True) if args.format == "json" else render(report))
+    try:
+        if sys.stdout is None:
+            raise OSError("stdout is unavailable")
+        print(json.dumps(report, indent=2, ensure_ascii=True) if args.format == "json" else render(report))
+        # Surface buffered failures here, not as shutdown status 120.
+        sys.stdout.flush()
+    except (OSError, ValueError):
+        # Discard pending output so interpreter shutdown cannot retry the sink.
+        try:
+            target = sys.stdout.fileno()
+            sink = os.open(os.devnull, os.O_WRONLY)
+            if sink != target:
+                try:
+                    os.dup2(sink, target)
+                finally:
+                    os.close(sink)
+        except (OSError, ValueError, AttributeError):
+            sys.stdout = None
+        # Exception text can contain private paths or stream details.
+        print("envlayer-audit: output could not be written", file=sys.stderr)
+        return 2
     return 0 if report["ok"] else 1
 
 

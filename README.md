@@ -154,3 +154,5 @@ validation, environment non-mutation, CLI exit codes and redaction regressions.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md).
 Licensed under [MIT](LICENSE).
+
+Report write or flush failures, including unavailable stdout, also exit `2` with a generic stderr message and override the audit result. A destination may contain a partial report; discard it after any output error. This does not guarantee durable storage or downstream processing.
